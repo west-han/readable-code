@@ -34,7 +34,7 @@ public class MinesweeperGame {
             if (doesUserChooseToPlantFlag(userActionInput)) {
                 board[selectedRowIndex][selectedColIndex] = "⚑";
                 checkIfGameIsOver();
-            } else if (userActionInput.equals("1")) {
+            } else if (doesUserChooseToOpenCell(userActionInput)) {
                 if (isLandMineCell(selectedRowIndex, selectedColIndex)) {
                     board[selectedRowIndex][selectedColIndex] = "☼";
                     changeGameStatusToLose();
@@ -47,6 +47,10 @@ public class MinesweeperGame {
                 System.out.println("잘못된 번호를 선택하셨습니다.");
             }
         }
+    }
+
+    private static boolean doesUserChooseToOpenCell(String userActionInput) {
+        return userActionInput.equals("1");
     }
 
     private static void changeGameStatusToLose() {
