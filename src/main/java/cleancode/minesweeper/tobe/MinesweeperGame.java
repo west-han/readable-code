@@ -58,7 +58,7 @@ public class MinesweeperGame {
     }
 
     private static void checkIfGameIsOver() {
-        if (isAllOpened()) {
+        if (isAllCellOpened()) {
             changeGameStatusToLose();
         }
     }
@@ -67,7 +67,7 @@ public class MinesweeperGame {
         return userActionInput.equals("2");
     }
 
-    private static boolean isAllOpened() {
+    private static boolean isAllCellOpened() {
         boolean isAllOpened = true;
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 10; col++) {
@@ -81,48 +81,32 @@ public class MinesweeperGame {
 
     private static int getSelectedRowIndex(String cellInput) {
         char cellInputRow = cellInput.charAt(1);
+        return convertRowFrom(cellInputRow);
+    }
+
+    private static int convertRowFrom(char cellInputRow) {
         return Character.getNumericValue(cellInputRow) - 1;
     }
 
     private static int getSelectedColIndex(String cellInput) {
         char cellInputCol = cellInput.charAt(0);
-        int selectedColIndex;
-        switch (cellInputCol) {
-            case 'a':
-                selectedColIndex = 0;
-                break;
-            case 'b':
-                selectedColIndex = 1;
-                break;
-            case 'c':
-                selectedColIndex = 2;
-                break;
-            case 'd':
-                selectedColIndex = 3;
-                break;
-            case 'e':
-                selectedColIndex = 4;
-                break;
-            case 'f':
-                selectedColIndex = 5;
-                break;
-            case 'g':
-                selectedColIndex = 6;
-                break;
-            case 'h':
-                selectedColIndex = 7;
-                break;
-            case 'i':
-                selectedColIndex = 8;
-                break;
-            case 'j':
-                selectedColIndex = 9;
-                break;
-            default:
-                selectedColIndex = -1;
-                break;
-        }
-        return selectedColIndex;
+        return convertColFrom(cellInputCol);
+    }
+
+    private static int convertColFrom(char cellInputCol) {
+        return switch (cellInputCol) {
+            case 'a' -> 0;
+            case 'b' -> 1;
+            case 'c' -> 2;
+            case 'd' -> 3;
+            case 'e' -> 4;
+            case 'f' -> 5;
+            case 'g' -> 6;
+            case 'h' -> 7;
+            case 'i' -> 8;
+            case 'j' -> 9;
+            default -> -1;
+        };
     }
 
     private static String getUserActionInputFromUser(Scanner scanner) {
