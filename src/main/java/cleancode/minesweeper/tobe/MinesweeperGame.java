@@ -1,5 +1,6 @@
 package cleancode.minesweeper.tobe;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -22,6 +23,7 @@ public class MinesweeperGame {
     public static void main(String[] args) {
         showGameStartMessage();
         initGame();
+
         while (true) {
             showBoard();
 
@@ -51,11 +53,12 @@ public class MinesweeperGame {
         }
 
         if (doesUserChooseToOpenCell(userActionInput)) {
-            if (!isLandMineCell(selectedRowIndex, selectedColIndex)) {
+            if (isLandMineCell(selectedRowIndex, selectedColIndex)) {
                 BOARD[selectedRowIndex][selectedColIndex] = LAND_MINE_SIGN;
                 changeGameStatusToLose();
                 return;
             }
+
             open(selectedRowIndex, selectedColIndex);
             checkIfGameIsOver();
             return;
@@ -115,15 +118,9 @@ public class MinesweeperGame {
     }
 
     private static boolean isAllCellOpened() {
-        boolean isAllOpened = true;
-        for (int row = 0; row < BOARD_ROW_SIZE; row++) {
-            for (int col = 0; col < BOARD_COL_SIZE; col++) {
-                if (BOARD[row][col].equals(CLOSE_CELL_SIGN)) {
-                    isAllOpened = false;
-                }
-            }
-        }
-        return isAllOpened;
+        return Arrays.stream(BOARD)
+                .flatMap(Arrays::stream)
+                .noneMatch(cell -> cell.equals(CLOSE_CELL_SIGN));
     }
 
     private static int convertRowFrom(char cellInputRow) {
@@ -171,49 +168,56 @@ public class MinesweeperGame {
                 BOARD[row][col] = CLOSE_CELL_SIGN;
             }
         }
+
         for (int i = 0; i < LAND_MINE_COUNT; i++) {
             int col = new Random().nextInt(BOARD_COL_SIZE);
             int row = new Random().nextInt(BOARD_ROW_SIZE);
             LAND_MINES[row][col] = true;
         }
+
         for (int row = 0; row < BOARD_ROW_SIZE; row++) {
             for (int col = 0; col < BOARD_COL_SIZE; col++) {
-                int count = 0;
-                if (!isLandMineCell(row, col)) {
-                    if (row - 1 >= 0 && col - 1 >= 0 && isLandMineCell(row - 1, col - 1)) {
-                        count++;
-                    }
-                    if (row - 1 >= 0 && isLandMineCell(row - 1, col)) {
-                        count++;
-                    }
-                    if (row - 1 >= 0 && col + 1 < 10 && isLandMineCell(row - 1, col + 1)) {
-                        count++;
-                    }
-                    if (col - 1 >= 0 && isLandMineCell(row, col - 1)) {
-                        count++;
-                    }
-                    if (col + 1 < 10 && isLandMineCell(row, col + 1)) {
-                        count++;
-                    }
-                    if (row + 1 < 8 && col - 1 >= 0 && isLandMineCell(row + 1, col - 1)) {
-                        count++;
-                    }
-                    if (row + 1 < 8 && isLandMineCell(row + 1, col)) {
-                        count++;
-                    }
-                    if (row + 1 < 8 && col + 1 < 10 && isLandMineCell(row + 1, col + 1)) {
-                        count++;
-                    }
-                    NEARBY_LAND_MINE_COUNTS[row][col] = count;
+                if (isLandMineCell(row, col)) {
+                    NEARBY_LAND_MINE_COUNTS[row][col] = 0;
                     continue;
                 }
-                NEARBY_LAND_MINE_COUNTS[row][col] = 0;
+                int count = countNearByLandMines(row, col);
+                NEARBY_LAND_MINE_COUNTS[row][col] = count;
             }
         }
     }
 
+    private static int countNearByLandMines(int row, int col) {
+        int count = 0;
+        if (row - 1 >= 0 && col - 1 >= 0 && isLandMineCell(row - 1, col - 1)) {
+            count++;
+        }
+        if (row - 1 >= 0 && isLandMineCell(row - 1, col)) {
+            count++;
+        }
+        if (row - 1 >= 0 && col + 1 < BOARD_COL_SIZE && isLandMineCell(row - 1, col + 1)) {
+            count++;
+        }
+        if (col - 1 >= 0 && isLandMineCell(row, col - 1)) {
+            count++;
+        }
+        if (col + 1 < BOARD_COL_SIZE && isLandMineCell(row, col + 1)) {
+            count++;
+        }
+        if (row + 1 < BOARD_ROW_SIZE && col - 1 >= 0 && isLandMineCell(row + 1, col - 1)) {
+            count++;
+        }
+        if (row + 1 < BOARD_ROW_SIZE && isLandMineCell(row + 1, col)) {
+            count++;
+        }
+        if (row + 1 < BOARD_ROW_SIZE && col + 1 < BOARD_COL_SIZE && isLandMineCell(row + 1, col + 1)) {
+            count++;
+        }
+        return count;
+    }
+
     private static void open(int row, int col) {
-        if (row < 0 || row >= 8 || col < 0 || col >= 10) {
+        if (row < 0 || row >= BOARD_ROW_SIZE || col < 0 || col >= BOARD_COL_SIZE) {
             return;
         }
         if (!BOARD[row][col].equals(CLOSE_CELL_SIGN)) {
