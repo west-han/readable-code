@@ -1,10 +1,12 @@
 package cleancode.minesweeper.tobe;
 
+import cleancode.minesweeper.tobe.game.GameInitializable;
+import cleancode.minesweeper.tobe.game.GameRunnable;
 import cleancode.minesweeper.tobe.gamelevel.GameLevel;
 import cleancode.minesweeper.tobe.io.ConsoleInputHandler;
 import cleancode.minesweeper.tobe.io.ConsoleOutputHandler;
 
-public class MineSweeper {
+public class MineSweeper implements GameInitializable, GameRunnable {
     private final GameBoard gameBoard;
     private final BoardIndexConverter boardIndexConverter = new BoardIndexConverter();
     private final ConsoleInputHandler consoleInputHandler = new ConsoleInputHandler();
@@ -15,9 +17,13 @@ public class MineSweeper {
         gameBoard = new GameBoard(gameLevel);
     }
 
+    @Override
+    public void initialize() {
+        gameBoard.initGame();
+    }
+
     public void run() {
         consoleOutputHandler.showGameStartMessage();
-        gameBoard.initGame();
 
         while (true) {
             try {
