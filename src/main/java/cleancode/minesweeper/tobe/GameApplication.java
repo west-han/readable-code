@@ -1,5 +1,6 @@
 package cleancode.minesweeper.tobe;
 
+import cleancode.minesweeper.tobe.config.GameConfig;
 import cleancode.minesweeper.tobe.gamelevel.Beginner;
 import cleancode.minesweeper.tobe.gamelevel.GameLevel;
 import cleancode.minesweeper.tobe.io.ConsoleInputHandler;
@@ -14,16 +15,13 @@ public class GameApplication {
         InputHandler inputHandler = new ConsoleInputHandler();
         OutputHandler outputHandler = new ConsoleOutputHandler();
 
-        MineSweeper minesweeper = new MineSweeper(gameLevel, inputHandler, outputHandler);
+        GameConfig gameConfig = new GameConfig(
+                new Beginner(),
+                new ConsoleInputHandler(),
+                new ConsoleOutputHandler());
+
+        MineSweeper minesweeper = new MineSweeper(gameConfig);
         minesweeper.initialize();
         minesweeper.run();
     }
-
-    /*
-     * DIP (Dependency Inversion Principle)
-     *
-     * DI (Dependency Injection)
-     *
-     * IoC (Inversion of Control)
-     */
 }
