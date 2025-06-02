@@ -22,11 +22,6 @@ public class GameBoard {
         landMineCount = gameLevel.getLandMineCount();
     }
 
-    public String getSign(CellPosition cellPosition) {
-        Cell cell = findCell(cellPosition);
-        return cell.getSign();
-    }
-
     private Cell findCell(CellPosition cellPosition) {
         return board[cellPosition.getRowIndex()][cellPosition.getColIndex()];
     }
@@ -99,6 +94,11 @@ public class GameBoard {
 
         return cellPosition.isRowIndexMoreThanOrEqual(rowSize)
                 || cellPosition.isColIndexMoreThanOrEqual(colSize);
+    }
+
+    public CellSnapshot getSnapshot(CellPosition cellPosition) {
+        Cell cell = findCell(cellPosition);
+        return cell.getSnapshot();
     }
 
     public void initGame() {
