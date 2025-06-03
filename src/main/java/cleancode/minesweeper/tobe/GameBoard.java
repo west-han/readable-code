@@ -51,10 +51,9 @@ public class GameBoard {
         gameStatus = GameStatus.WIN;
     }
 
-    public void openOneCell(CellPosition cellPosition) {
+    public void openOneCellAt(CellPosition cellPosition) {
         Cell cell = findCell(cellPosition);
         cell.open();
-        changeGameStatusToLose();
     }
 
     private void changeGameStatusToLose() {
@@ -75,7 +74,7 @@ public class GameBoard {
             return;
         }
 
-        openOneCell(cellPosition);
+        openOneCellAt(cellPosition);
 
         if (doesCellHaveLandMineCount(cellPosition)) {
             return;
@@ -189,7 +188,7 @@ public class GameBoard {
 
     public void openAt(CellPosition cellPosition) {
         if (isLandMineCellAt(cellPosition)) {
-            openOneCell(cellPosition);
+            openOneCellAt(cellPosition);
             changeGameStatusToLose();
             return;
         }
