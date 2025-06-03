@@ -34,6 +34,14 @@ public class StudyCafePass {
         return discountRate;
     }
 
+    public int getDiscountPrice() {
+        return (int) (price * discountRate);
+    }
+
+    public int getTotalPrice() {
+        return price - getDiscountPrice();
+    }
+
     public String display() {
         if (passType == StudyCafePassType.HOURLY) {
             return String.format("%s시간권 - %d원", duration, price);
@@ -47,4 +55,19 @@ public class StudyCafePass {
         return "";
     }
 
+    public boolean hasSameDurationTypeWith(StudyCafeLockerPass lockerPass) {
+        return this.duration == lockerPass.getDuration() && this.passType == lockerPass.getPassType();
+    }
+
+    public boolean isSamePassType(StudyCafePassType passType) {
+        return this.passType == passType;
+    }
+
+    public boolean canUseLocker() {
+        return passType == StudyCafePassType.FIXED;
+    }
+
+    public boolean isDiscounted() {
+        return this.discountRate > 0;
+    }
 }
