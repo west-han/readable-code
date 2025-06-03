@@ -4,6 +4,7 @@ import cleancode.minesweeper.tobe.minesweeper.MineSweeper;
 import cleancode.minesweeper.tobe.minesweeper.config.GameConfig;
 import cleancode.minesweeper.tobe.minesweeper.gamelevel.Beginner;
 import cleancode.minesweeper.tobe.minesweeper.gamelevel.GameLevel;
+import cleancode.minesweeper.tobe.minesweeper.gamelevel.VeryBeginner;
 import cleancode.minesweeper.tobe.minesweeper.io.ConsoleInputHandler;
 import cleancode.minesweeper.tobe.minesweeper.io.ConsoleOutputHandler;
 import cleancode.minesweeper.tobe.minesweeper.io.InputHandler;
@@ -17,7 +18,7 @@ public class GameApplication {
         OutputHandler outputHandler = new ConsoleOutputHandler();
 
         GameConfig gameConfig = new GameConfig(
-                new Beginner(),
+                new VeryBeginner(),
                 new ConsoleInputHandler(),
                 new ConsoleOutputHandler());
 
