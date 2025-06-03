@@ -43,6 +43,14 @@ public class ConsoleOutputHandler implements OutputHandler {
         System.out.println();
     }
 
+    private String generateColAlphabets(GameBoard board) {
+        List<String> alphabets = IntStream.range(0, board.getColSize())
+                .mapToObj(index -> (char) ('a' + index))
+                .map(Object::toString)
+                .toList();
+        return String.join(" ", alphabets);
+    }
+
     private String decideCellSignFromSnapshot(CellSnapshot snapshot) {
         CellSnapshotStatus status = snapshot.getStatus();
         if (status == CellSnapshotStatus.EMPTY) {
@@ -61,14 +69,6 @@ public class ConsoleOutputHandler implements OutputHandler {
             return UNCHECKED_SIGN;
         }
         throw new IllegalStateException("확인할 수 없는 셀입니다.");
-    }
-
-    private String generateColAlphabets(GameBoard board) {
-        List<String> alphabets = IntStream.range(0, board.getColSize())
-                .mapToObj(index -> (char) ('a' + index))
-                .map(Object::toString)
-                .toList();
-        return String.join(" ", alphabets);
     }
 
     @Override
