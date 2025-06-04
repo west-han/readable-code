@@ -1,7 +1,6 @@
 package cleancode.studycafe.mission.model.pass;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 public enum StudyCafePassType {
@@ -14,20 +13,10 @@ public enum StudyCafePassType {
     private final String value;
     private final String unit;
 
-    private static final List<StudyCafePassType> LOCKER_TYPES = List.of(StudyCafePassType.FIXED);
-
     StudyCafePassType(String description, String value, String unit) {
         this.description = description;
         this.value = value;
         this.unit = unit;
-    }
-
-    public boolean isLockerType() {
-        return LOCKER_TYPES.contains(this);
-    }
-
-    public boolean isNotLockerType() {
-        return !isLockerType();
     }
 
     public static Optional<StudyCafePassType> findBy(String value) {
