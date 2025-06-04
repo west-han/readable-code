@@ -1,4 +1,6 @@
-package cleancode.studycafe.mission.model;
+package cleancode.studycafe.mission.model.pass.locker;
+
+import cleancode.studycafe.mission.model.pass.StudyCafePassType;
 
 public class StudyCafeLockerPass {
 
@@ -20,25 +22,21 @@ public class StudyCafeLockerPass {
         return passType;
     }
 
-    public int getDuration() {
-        return duration;
+    public boolean isSameDuration(int duration) {
+        return this.duration == duration;
+    }
+
+    public boolean hasSamePassType(StudyCafePassType passType) {
+        return this.passType == passType;
     }
 
     public int getPrice() {
         return price;
     }
 
-    public String display() {
-        if (passType == StudyCafePassType.HOURLY) {
-            return String.format("%s시간권 - %d원", duration, price);
-        }
-        if (passType == StudyCafePassType.WEEKLY) {
-            return String.format("%s주권 - %d원", duration, price);
-        }
-        if (passType == StudyCafePassType.FIXED) {
-            return String.format("%s주권 - %d원", duration, price);
-        }
-        return "";
+    @Override
+    public String toString() {
+        return String.format("%s%s권 - %d원", duration, passType.getUnit(), price);
     }
 
 }

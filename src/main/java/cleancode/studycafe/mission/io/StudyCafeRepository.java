@@ -1,14 +1,12 @@
 package cleancode.studycafe.mission.io;
 
-import cleancode.studycafe.mission.model.StudyCafeLockerPass;
-import cleancode.studycafe.mission.model.StudyCafePass;
-
-import java.util.List;
+import cleancode.studycafe.mission.model.pass.locker.StudyCafeLockerPasses;
+import cleancode.studycafe.mission.model.pass.seat.StudyCafeSeatPasses;
 
 public interface StudyCafeRepository {
 
-    List<StudyCafePass> readStudyCafePasses();
+    StudyCafeSeatPasses readStudyCafePasses();
 
-    List<StudyCafeLockerPass> readLockerPasses();
+    StudyCafeLockerPasses readLockerPasses();
 
 }

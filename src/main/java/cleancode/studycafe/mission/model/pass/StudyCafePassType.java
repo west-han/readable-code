@@ -1,6 +1,7 @@
-package cleancode.studycafe.mission.model;
+package cleancode.studycafe.mission.model.pass;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public enum StudyCafePassType {
@@ -13,17 +14,22 @@ public enum StudyCafePassType {
     private final String value;
     private final String unit;
 
+    private static final List<StudyCafePassType> LOCKER_TYPES = List.of(StudyCafePassType.FIXED);
+
     StudyCafePassType(String description, String value, String unit) {
         this.description = description;
         this.value = value;
         this.unit = unit;
     }
 
-    public boolean canUseLocker() {
-        return this == StudyCafePassType.FIXED;
+    public boolean isLockerType() {
+        return LOCKER_TYPES.contains(this);
     }
 
-    // 입력값을 Enum 내에서 찾도록 하는 이 방식이 ConsoleInputHandler 와의 결합도를 너무 높이는 건 아닐까?
+    public boolean isNotLockerType() {
+        return !isLockerType();
+    }
+
     public static Optional<StudyCafePassType> findBy(String value) {
         return Arrays.stream(values())
                 .filter(passType -> passType.isEqualValue(value))

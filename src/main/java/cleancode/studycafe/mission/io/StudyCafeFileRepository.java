@@ -1,8 +1,10 @@
 package cleancode.studycafe.mission.io;
 
-import cleancode.studycafe.mission.model.StudyCafeLockerPass;
-import cleancode.studycafe.mission.model.StudyCafePass;
-import cleancode.studycafe.mission.model.StudyCafePassType;
+import cleancode.studycafe.mission.model.pass.*;
+import cleancode.studycafe.mission.model.pass.locker.StudyCafeLockerPass;
+import cleancode.studycafe.mission.model.pass.locker.StudyCafeLockerPasses;
+import cleancode.studycafe.mission.model.pass.seat.StudyCafeSeatPass;
+import cleancode.studycafe.mission.model.pass.seat.StudyCafeSeatPasses;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,41 +14,45 @@ import java.util.List;
 
 public class StudyCafeFileRepository implements StudyCafeRepository {
 
-    public List<StudyCafePass> readStudyCafePasses() {
+    private static final String STUDYCAFE_SEAT_PASS_LIST = "src/main/resources/cleancode/studycafe/pass-list.csv";
+    private static final String STUDYCAFE_LOCKER_PASS_LIST = "src/main/resources/cleancode/studycafe/locker.csv";
+
+    @Override
+    public StudyCafeSeatPasses readStudyCafePasses() {
         try {
-            List<String> lines = Files.readAllLines(Paths.get("src/main/resources/cleancode/studycafe/pass-list.csv"));
-            return generateStudyCafePassList(lines);
+            List<String> lines = Files.readAllLines(Paths.get(STUDYCAFE_SEAT_PASS_LIST));
+            return StudyCafeSeatPasses.of(generateStudyCafePassList(lines));
         } catch (IOException e) {
             throw new RuntimeException("파일을 읽는데 실패했습니다.", e);
         }
     }
 
-    public List<StudyCafeLockerPass> readLockerPasses() {
+    public StudyCafeLockerPasses readLockerPasses() {
         try {
-            List<String> lines = Files.readAllLines(Paths.get("src/main/resources/cleancode/studycafe/locker.csv"));
-            return generateLockerPassList(lines);
+            List<String> lines = Files.readAllLines(Paths.get(STUDYCAFE_LOCKER_PASS_LIST));
+            return StudyCafeLockerPasses.of(generateLockerPassList(lines));
         } catch (IOException e) {
             throw new RuntimeException("파일을 읽는데 실패했습니다.", e);
         }
     }
 
-    private List<StudyCafePass> generateStudyCafePassList(List<String> lines) {
-        List<StudyCafePass> studyCafePasses = new ArrayList<>();
+    private List<StudyCafeSeatPass> generateStudyCafePassList(List<String> lines) {
+        List<StudyCafeSeatPass> studyCafeSeatPasses = new ArrayList<>();
         for (String line : lines) {
-            StudyCafePass studyCafePass = parsetStringToStudyCafePass(line);
-            studyCafePasses.add(studyCafePass);
+            StudyCafeSeatPass studyCafeSeatPass = parseStringToStudyCafePass(line);
+            studyCafeSeatPasses.add(studyCafeSeatPass);
         }
-        return studyCafePasses;
+        return studyCafeSeatPasses;
     }
 
-    private StudyCafePass parsetStringToStudyCafePass(String line) {
+    private StudyCafeSeatPass parseStringToStudyCafePass(String line) {
         String[] values = line.split(",");
         StudyCafePassType studyCafePassType = StudyCafePassType.valueOf(values[0]);
         int duration = Integer.parseInt(values[1]);
         int price = Integer.parseInt(values[2]);
         double discountRate = Double.parseDouble(values[3]);
 
-        return StudyCafePass.of(studyCafePassType, duration, price, discountRate);
+        return StudyCafeSeatPass.of(studyCafePassType, duration, price, discountRate);
     }
 
     private List<StudyCafeLockerPass> generateLockerPassList(List<String> lines) {

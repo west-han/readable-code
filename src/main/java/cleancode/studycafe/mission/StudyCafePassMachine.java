@@ -5,11 +5,15 @@ import cleancode.studycafe.mission.exception.AppException;
 import cleancode.studycafe.mission.io.InputHandler;
 import cleancode.studycafe.mission.io.OutputHandler;
 import cleancode.studycafe.mission.io.StudyCafeRepository;
-import cleancode.studycafe.mission.model.StudyCafeLockerPass;
-import cleancode.studycafe.mission.model.StudyCafePass;
-import cleancode.studycafe.mission.model.StudyCafePassType;
+import cleancode.studycafe.mission.model.PassOrder;
+import cleancode.studycafe.mission.model.pass.*;
+import cleancode.studycafe.mission.model.pass.locker.StudyCafeLockerPass;
+import cleancode.studycafe.mission.model.pass.locker.StudyCafeLockerPasses;
+import cleancode.studycafe.mission.model.pass.seat.StudyCafeSeatPass;
+import cleancode.studycafe.mission.model.pass.seat.StudyCafeSeatPasses;
 
 import java.util.List;
+import java.util.Optional;
 
 public class StudyCafePassMachine {
 
@@ -28,15 +32,10 @@ public class StudyCafePassMachine {
             outputHandler.showWelcomeMessage();
             outputHandler.showAnnouncement();
 
-            StudyCafePass selectedPass = selectPass();
-
-            StudyCafeLockerPass lockerPass = selectLockerPass(selectedPass);
-
-            if (selectedPass.canUseLocker() && doesUserSelectLocker(lockerPass)) {
-                outputHandler.showPassOrderSummary(selectedPass, lockerPass);
-            } else {
-                outputHandler.showPassOrderSummary(selectedPass, null);
-            }
+            StudyCafeSeatPass selectedPass = selectPass();
+            StudyCafeLockerPass lockerPass = selectLockerPass(selectedPass).orElse(null);
+            PassOrder order = PassOrder.of(selectedPass, lockerPass);
+            outputHandler.showPassOrderSummary(order);
 
         } catch (AppException e) {
             outputHandler.showSimpleMessage(e.getMessage());
@@ -45,34 +44,34 @@ public class StudyCafePassMachine {
         }
     }
 
-    private boolean doesUserSelectLocker(StudyCafeLockerPass lockerPass) {
-        outputHandler.askLockerPass(lockerPass);
-        return inputHandler.getLockerSelection();
-    }
-
-    private StudyCafeLockerPass selectLockerPass(StudyCafePass studyCafePass) {
-        List<StudyCafeLockerPass> lockerPasses = studyCafeRepository.readLockerPasses();
-        return lockerPasses.stream()
-            .filter(studyCafePass::hasSameDurationTypeWith)
-            .findFirst()
-            .orElse(null);
-    }
-
-    private StudyCafePass selectPass() {
+    private StudyCafeSeatPass selectPass() {
         outputHandler.askPassTypeSelection();
         StudyCafePassType studyCafePassType = inputHandler.getPassTypeSelectingUserAction();
 
-        List<StudyCafePass> passes = listPassCandidates(studyCafePassType);
+        List<StudyCafeSeatPass> passes = listPassCandidate(studyCafePassType);
         outputHandler.showPassListForSelection(passes);
         return inputHandler.getSelectPass(passes);
     }
 
-    private List<StudyCafePass> listPassCandidates(StudyCafePassType passType) {
-        List<StudyCafePass> studyCafePasses = studyCafeRepository.readStudyCafePasses();
+    private List<StudyCafeSeatPass> listPassCandidate(StudyCafePassType passType) {
+        StudyCafeSeatPasses studyCafeSeatPasses = studyCafeRepository.readStudyCafePasses();
+        return studyCafeSeatPasses.listCandidate(passType);
+    }
 
-        return studyCafePasses.stream()
-            .filter(studyCafePass -> studyCafePass.isSamePassType(passType))
-            .toList();
+    private Optional<StudyCafeLockerPass> selectLockerPass(StudyCafeSeatPass studyCafeSeatPass) {
+        StudyCafeLockerPasses lockerPasses = studyCafeRepository.readLockerPasses();
+        Optional<StudyCafeLockerPass> optionalLockerPass = lockerPasses.findLockerPassCandidate(studyCafeSeatPass);
+
+        if (optionalLockerPass.isEmpty()) {
+            return optionalLockerPass;
+        }
+
+        outputHandler.askLockerPass(optionalLockerPass.get());
+        if (inputHandler.getLockerSelection()) {
+            return optionalLockerPass;
+        }
+
+        return Optional.empty();
     }
 
 }
