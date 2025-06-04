@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudyCafeFileHandler {
+public class StudyCafeFileRepository implements StudyCafeRepository {
 
     public List<StudyCafePass> readStudyCafePasses() {
         try {

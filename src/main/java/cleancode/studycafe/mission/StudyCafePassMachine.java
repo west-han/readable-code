@@ -1,9 +1,10 @@
 package cleancode.studycafe.mission;
 
+import cleancode.studycafe.mission.config.StudyCafeAppConfig;
 import cleancode.studycafe.mission.exception.AppException;
 import cleancode.studycafe.mission.io.InputHandler;
 import cleancode.studycafe.mission.io.OutputHandler;
-import cleancode.studycafe.mission.io.StudyCafeFileHandler;
+import cleancode.studycafe.mission.io.StudyCafeRepository;
 import cleancode.studycafe.mission.model.StudyCafeLockerPass;
 import cleancode.studycafe.mission.model.StudyCafePass;
 import cleancode.studycafe.mission.model.StudyCafePassType;
@@ -12,9 +13,15 @@ import java.util.List;
 
 public class StudyCafePassMachine {
 
-    private final InputHandler inputHandler = new InputHandler();
-    private final OutputHandler outputHandler = new OutputHandler();
-    private final StudyCafeFileHandler studyCafeFileHandler = new StudyCafeFileHandler();
+    private final InputHandler inputHandler;
+    private final OutputHandler outputHandler;
+    private final StudyCafeRepository studyCafeRepository;
+
+    public StudyCafePassMachine(StudyCafeAppConfig config) {
+        this.inputHandler = config.getInputHandler();
+        this.outputHandler = config.getOutputHandler();
+        this.studyCafeRepository = config.getStudyCafeRepository();
+    }
 
     public void run() {
         try {
@@ -44,7 +51,7 @@ public class StudyCafePassMachine {
     }
 
     private StudyCafeLockerPass selectLockerPass(StudyCafePass studyCafePass) {
-        List<StudyCafeLockerPass> lockerPasses = studyCafeFileHandler.readLockerPasses();
+        List<StudyCafeLockerPass> lockerPasses = studyCafeRepository.readLockerPasses();
         return lockerPasses.stream()
             .filter(studyCafePass::hasSameDurationTypeWith)
             .findFirst()
@@ -61,7 +68,7 @@ public class StudyCafePassMachine {
     }
 
     private List<StudyCafePass> listPassCandidates(StudyCafePassType passType) {
-        List<StudyCafePass> studyCafePasses = studyCafeFileHandler.readStudyCafePasses();
+        List<StudyCafePass> studyCafePasses = studyCafeRepository.readStudyCafePasses();
 
         return studyCafePasses.stream()
             .filter(studyCafePass -> studyCafePass.isSamePassType(passType))
