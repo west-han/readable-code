@@ -4,7 +4,8 @@ import cleancode.studycafe.mission.model.pass.locker.StudyCafeLockerPass;
 import cleancode.studycafe.mission.model.pass.seat.StudyCafeSeatPass;
 
 public class PassOrder {
-
+    // TODO: studyCafeLockerPass가 Nullable이라는 점을 더 명확히 표현할 수 있도록 방안 고려
+    //       지금처럼 새로운 메소드 추가 시마다 null 체크(hasLockerPass)가 필요하다면, 해당 로직을 구현하지 않을 경우 NPE 발생 가능성 높음
     private final StudyCafeSeatPass studyCafeSeatPass;
     private final StudyCafeLockerPass studyCafeLockerPass;
 
